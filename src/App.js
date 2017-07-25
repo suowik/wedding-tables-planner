@@ -8,9 +8,10 @@ class App extends Component {
 
     constructor(props) {
         super(props);
+        console.log(window.location.search)
         this.initialTablesSetup = this.initialTablesSetup.bind(this);
         this.assignGuestToTable = this.assignGuestToTable.bind(this);
-        this.refreshState = this.refreshState.bind(this);
+        this.pasteStateHandler = this.pasteStateHandler.bind(this);
         this.findGuestAcrossTablesAndRemoveIt = this.findGuestAcrossTablesAndRemoveIt.bind(this);
         this.closeEditMode = this.closeEditMode.bind(this);
         this.editHandler = this.editHandler.bind(this);
@@ -90,7 +91,7 @@ class App extends Component {
     };
 
     assignGuestToTable(guest, tableId) {
-        this.findGuestAcrossTablesAndRemoveIt(guest, tableId);
+        this.findGuestAcrossTablesAndRemoveIt(guest);
         let tables = this.state.tables;
         if (tableId !== "---") {
             let table = tables[tableId];
@@ -99,13 +100,14 @@ class App extends Component {
                 table.guests.push(guest)
             }
         }
+
         this.setState({
             tables: tables,
             state: new Buffer(JSON.stringify(this.state)).toString('base64')
         });
     }
 
-    findGuestAcrossTablesAndRemoveIt(guest, tableId) {
+    findGuestAcrossTablesAndRemoveIt(guest) {
         this.state.tables.forEach(t => {
             let guests = t.guests;
             let indexOf = guests.indexOf(guest);
@@ -117,7 +119,7 @@ class App extends Component {
         })
     }
 
-    refreshState(e) {
+    pasteStateHandler(e) {
         e.preventDefault();
         let pasted = e.clipboardData.getData('text/plain');
         let newState = JSON.parse(Buffer.from(pasted, 'base64').toString());
@@ -144,7 +146,7 @@ class App extends Component {
                                       type="text"
                                       value={this.state.state}
                                       className="form-control"
-                                      onPaste={this.refreshState}
+                                      onPaste={this.pasteStateHandler}
                             />
                         </div>
                     </div>
