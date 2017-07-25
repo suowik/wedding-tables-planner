@@ -7,14 +7,14 @@ class TableGuestList extends Component {
     render() {
         return (
             <div style={{overflow: 'auto', height: '300px'}}>
-                <ul>
+                <ol>
                     {this.props.filtered
                         .map(g => {
                             return <Draggable key={g.id} type="guest" data={g.id}>
                                 <li>{g.name}</li>
                             </Draggable>
                         })}
-                </ul>
+                </ol>
             </div>
         )
     }
@@ -59,9 +59,9 @@ export default class EditTable extends Component {
                             <Droppable
                                 types={['guest']}
                                 onDrop={this.onDrop}>
-                                <ul>
-                                    {this.props.editMode.table.guests.map(g => <li key={g.id} value={g.id}>{g.id}</li>)}
-                                </ul>
+                                <ol>
+                                    {this.props.editMode.table.guests.map(g => <li key={g.id} value={g.id}>{g.name}</li>)}
+                                </ol>
                             </Droppable>
                         </div>
                     </div>
