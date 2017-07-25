@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
+import shortid from 'shortid'
+
 import Tables from './Tables.js';
 import GuestList from './GuestList.js';
 import EditTable from './EditTable.js';
-import ManageGuests from './ManageGuests.js'
+import ManageGuests from './ManageGuests.js';
 
 class App extends Component {
 
     constructor(props) {
         super(props);
-        console.log(window.location.search)
         this.initialTablesSetup = this.initialTablesSetup.bind(this);
         this.assignGuestToTable = this.assignGuestToTable.bind(this);
         this.pasteStateHandler = this.pasteStateHandler.bind(this);
@@ -35,7 +36,7 @@ class App extends Component {
 
     addGuestsHandler(rawGuests, type) {
         let newGuests = rawGuests.map(g => {
-            return {id: g, type: type, table: ""}
+            return {id: shortid.generate(), name: g, type: type, table: ""}
         });
         let guests = this.state.guests;
         guests = guests.filter(g => g.type !== type);
@@ -50,7 +51,6 @@ class App extends Component {
         this.setState({
             editMode: {
                 active: false,
-                allGuests: this.state.guests,
                 table: {label: "", guests: []},
             }
         })
@@ -61,7 +61,6 @@ class App extends Component {
         this.setState({
             editMode: {
                 active: true,
-                allGuests: this.state.guests,
                 table: table
             }
         })
@@ -92,6 +91,8 @@ class App extends Component {
     assignGuestToTable(guest, tableId) {
         this.findGuestAcrossTablesAndRemoveIt(guest);
         let tables = this.state.tables;
+        console.log(tables)
+
         if (tableId !== "---") {
             let table = tables[tableId];
             guest.table = tableId;
@@ -101,20 +102,17 @@ class App extends Component {
         }
 
         this.setState({
-            tables: tables,
+            tables: tables
         });
     }
 
     findGuestAcrossTablesAndRemoveIt(guest) {
         this.state.tables.forEach(t => {
             let guests = t.guests;
-            let indexOf = guests.indexOf(guest);
-            let found = indexOf !== -1;
-            if (found) {
-                guests.splice(indexOf, 1)
-            }
+            t.guests = guests.filter(g=>g.id !== guest.id);
             guest.table = ""
-        })
+        });
+        console.log(this.state.tables)
     }
 
     pasteStateHandler(e) {
@@ -150,7 +148,10 @@ class App extends Component {
                         <GuestList guests={this.state.guests}
                                    assignGuestToTable={this.assignGuestToTable}
                                    tables={this.state.tables}/>
+
                         <EditTable editMode={this.state.editMode}
+                                   guests={this.state.guests}
+                                   tables={this.state.tables}
                                    assignGuestToTable={this.assignGuestToTable}
                                    closeEditMode={this.closeEditMode}/>
                     </div>

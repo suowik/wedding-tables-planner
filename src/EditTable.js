@@ -1,6 +1,24 @@
 import React, {Component} from 'react';
 import {Button, Modal} from "react-bootstrap";
 import {Draggable, Droppable} from 'react-drag-and-drop'
+import Filter from './Filter.js'
+
+class TableGuestList extends Component {
+    render() {
+        return (
+            <div style={{overflow: 'auto', height: '300px'}}>
+                <ul>
+                    {this.props.filtered
+                        .map(g => {
+                            return <Draggable key={g.id} type="guest" data={g.id}>
+                                <li>{g.name}</li>
+                            </Draggable>
+                        })}
+                </ul>
+            </div>
+        )
+    }
+}
 
 export default class EditTable extends Component {
 
@@ -11,25 +29,7 @@ export default class EditTable extends Component {
             type: "all"
         };
         this.close = this.close.bind(this);
-        this.filter = this.filter.bind(this);
         this.onDrop = this.onDrop.bind(this);
-        this.changeSearchType = this.changeSearchType.bind(this)
-    }
-
-    filter(e) {
-        e.preventDefault();
-        let searchString = e.target.value.toLowerCase();
-        this.setState({
-            searchPhrase: searchString
-        })
-    }
-
-    changeSearchType(e) {
-        e.preventDefault();
-        let type = e.target.value;
-        this.setState({
-            type: type
-        })
     }
 
     close() {
@@ -37,7 +37,7 @@ export default class EditTable extends Component {
     }
 
     onDrop(data) {
-        let found = this.props.editMode.allGuests.filter(g => g.id === data.guest);
+        let found = this.props.guests.filter(g => g.id === data.guest);
         this.props.assignGuestToTable(found[0], this.props.editMode.table.id)
     }
 
@@ -50,50 +50,9 @@ export default class EditTable extends Component {
                 <Modal.Body>
                     <div className="container-fluid">
                         <div className="col-lg-6">
-                            <h4>Wszyscy goście</h4>
-                            <div className="form-group">
-                                <label htmlFor="filter">Wyszukaj:</label>
-                                <input id="filter"
-                                       type="text"
-                                       value={this.state.searchPhrase}
-                                       className="form-control"
-                                       onChange={this.filter}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="type">Rodzaj gościa:</label>
-                                <select id="type"
-                                        type="text"
-                                        value={this.state.type}
-                                        className="form-control"
-                                        onChange={this.changeSearchType}>
-                                    <option value={"groom-friends"}>Znajomi Młodego</option>
-                                    <option value={"bride-friends"}>Znajomi Młodej</option>
-                                    <option value={"bride-family"}>Rodzina Młodej</option>
-                                    <option value={"groom-family"}>Rodzina Młodego</option>
-                                    <option value={"others"}>Inni</option>
-                                    <option value={"all"}>---</option>
-                                </select>
-                            </div>
-                            <div style={{overflow: 'auto', height: '300px'}}>
-                                <ul>
-                                    {this.props.editMode.allGuests
-                                        .filter(g => {
-                                            let type;
-                                            if (this.state.type !== "all") {
-                                                type = g.type === this.state.type;
-                                            } else {
-                                                type = true
-                                            }
-                                            return type && g.id.toLowerCase().indexOf(this.state.searchPhrase.toLowerCase()) !== -1
-                                        })
-                                        .map(g => {
-                                            return <Draggable key={g.id} type="guest" data={g.id}>
-                                                <li>{g.id}</li>
-                                            </Draggable>
-                                        })}
-                                </ul>
-                            </div>
+                            <Filter editMode={this.props.editMode}
+                                    guests={this.props.guests}
+                                    guestsRepesentation={TableGuestList}/>
                         </div>
                         <div className="col-lg-6">
                             <h4>Przypisani goście</h4>
@@ -107,10 +66,10 @@ export default class EditTable extends Component {
                         </div>
                     </div>
                 </Modal.Body>
-                <Modal.Footer>
+                < Modal.Footer >
                     <Button onClick={this.close}>Close</Button>
-                </Modal.Footer>
-            </Modal>
+                </Modal.Footer >
+            </ Modal >
         )
     }
 }
