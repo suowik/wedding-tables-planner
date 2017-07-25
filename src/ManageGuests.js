@@ -17,6 +17,7 @@ class GuestsTextArea extends Component {
                 <div className="form-group">
                     <label>{this.props.label}</label>
                     <textarea className="form-control"
+                              rows={15}
                               value={this.props.guests.filter(g => g.type === this.props.type).map(g => g.id).join("\n")}
                               onPaste={this.handlePaste(this.props.type)}/>
                 </div>

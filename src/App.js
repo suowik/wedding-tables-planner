@@ -124,7 +124,7 @@ class App extends Component {
         this.setState({
             guests: newState.guests,
             tables: newState.tables,
-            state: pasted
+            state: null
         });
     }
 
