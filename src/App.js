@@ -25,7 +25,6 @@ class App extends Component {
             width: width,
             height: height,
             tables: tables,
-            state: "",
             editMode: {
                 active: false,
                 allGuests: guests,
@@ -103,7 +102,6 @@ class App extends Component {
 
         this.setState({
             tables: tables,
-            state: new Buffer(JSON.stringify(this.state)).toString('base64')
         });
     }
 
@@ -123,11 +121,7 @@ class App extends Component {
         e.preventDefault();
         let pasted = e.clipboardData.getData('text/plain');
         let newState = JSON.parse(Buffer.from(pasted, 'base64').toString());
-        this.setState({
-            guests: newState.guests,
-            tables: newState.tables,
-            state: null
-        });
+        this.setState(newState);
     }
 
     render() {
@@ -144,7 +138,7 @@ class App extends Component {
                             <label htmlFor="filter">Skopiuj stan:</label>
                             <textarea id="filter"
                                       type="text"
-                                      value={this.state.state}
+                                      value={new Buffer(JSON.stringify(this.state)).toString('base64')}
                                       className="form-control"
                                       onPaste={this.pasteStateHandler}
                             />
