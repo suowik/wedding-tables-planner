@@ -91,8 +91,6 @@ class App extends Component {
     assignGuestToTable(guest, tableId) {
         this.findGuestAcrossTablesAndRemoveIt(guest);
         let tables = this.state.tables;
-        console.log(tables)
-
         if (tableId !== "---") {
             let table = tables[tableId];
             guest.table = tableId;
@@ -112,7 +110,6 @@ class App extends Component {
             t.guests = guests.filter(g=>g.id !== guest.id);
             guest.table = ""
         });
-        console.log(this.state.tables)
     }
 
     pasteStateHandler(e) {

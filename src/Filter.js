@@ -59,6 +59,7 @@ export default class Filter extends Component {
                 <this.props.guestsRepesentation
                     tables={this.props.tables}
                     assignGuestToTable={this.props.assignGuestToTable}
+                    handleDoubleClick={this.props.handleDoubleClick}
                     filtered={this.props.guests
                         .filter(g => {
                             let type;
