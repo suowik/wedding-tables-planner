@@ -66,7 +66,8 @@ export default class GuestList extends Component {
                     </select>
                 </div>
                 <div style={{overflow: 'auto', height: '400px'}}>
-                    <table>
+                    <table className="table table-striped">
+                        <tbody>
                         {this.props.guests.filter(g => {
                             let type;
                             if (this.state.type !== "all") {
@@ -76,7 +77,8 @@ export default class GuestList extends Component {
                             }
                             return type && g.id.toLowerCase().indexOf(this.state.filter) !== -1
                         }).map((guest) => {
-                            return <tr key={guest.id}>
+                            let className = guest.table !== "" ? "success" : "danger";
+                            return <tr key={guest.id} className={className}>
                                 <td>{guest.id}</td>
                                 <td><select onChange={this.assignGuestToTable(guest)} value={guest.table}>
                                     <option value={"---"}>---</option>
@@ -86,6 +88,7 @@ export default class GuestList extends Component {
                                 </select></td>
                             </tr>
                         })}
+                        </tbody>
                     </table>
                 </div>
             </div>
