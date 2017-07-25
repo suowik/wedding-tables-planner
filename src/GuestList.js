@@ -5,7 +5,6 @@ export default class GuestList extends Component {
         super(props);
         this.state = {
             filter: "",
-            filteredGuests: props.guests,
             tables: props.tables.map(e => {
                 return {id: e.id, label: "Stół " + (e.id + 1)}
             })
@@ -18,7 +17,6 @@ export default class GuestList extends Component {
         e.preventDefault();
         let searchString = e.target.value.toLowerCase();
         this.setState({
-            filteredGuests: this.props.guests.filter(g => g.toLowerCase().indexOf(searchString) !== -1),
             filter: searchString
         })
     }
@@ -43,11 +41,14 @@ export default class GuestList extends Component {
                     />
                 </div>
                 <ul>
-                    {this.state.filteredGuests.map((e, i) => {
-                        return <li key={i}>{e} <select onChange={this.assignGuestToTable(e)}>
-                            <option value={"---"}>---</option>
-                            {this.state.tables.map(e2 => <option key={e + e2.id} value={e2.id}>{e2.label}</option>)}
-                        </select>
+                    {this.props.guests.filter(g => g.id.toLowerCase().indexOf(this.state.filter) !== -1).map((guest) => {
+                        return <li key={guest.id}>{guest.id}
+                            <select onChange={this.assignGuestToTable(guest)} value={guest.table}>
+                                <option value={"---"}>---</option>
+                                {this.props.tables.map(table =>
+                                    <option key={guest.id + table.id}
+                                            value={table.id}>{table.label}</option>)}
+                            </select>
                         </li>
                     })}
                 </ul>

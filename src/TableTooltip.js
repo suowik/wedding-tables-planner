@@ -22,7 +22,7 @@ export default class TableTooltip extends Component {
                     height={150}
                     padding={10}
                     fill={"#000"}
-                    text={this.props.guests.join("\n")}
+                    text={this.props.guests.map(g => g.id).join("\n")}
                 />
             </Group>
 
