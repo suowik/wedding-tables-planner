@@ -5,6 +5,7 @@ import Tables from './Tables.js';
 import GuestList from './GuestList.js';
 import EditTable from './EditTable.js';
 import ManageGuests from './ManageGuests.js';
+import PrintView from './PrintView.js';
 
 class App extends Component {
 
@@ -125,6 +126,7 @@ class App extends Component {
                 <div className="row">
                     <div className="col-lg-12">
                         <ManageGuests guests={this.state.guests} addGuestsHandler={this.addGuestsHandler}/>
+                        <PrintView tables={this.state.tables}/>
                     </div>
                 </div>
                 <div className="row">

@@ -51,7 +51,7 @@ export default class ManageGuests extends Component {
 
     render() {
         return (
-            <div>
+            <div className="col-lg-6">
                 <button className="btn btn-block btn-primary" onClick={this.open}>Zarządzaj gośćmi</button>
                 <Modal show={this.state.active} onHide={this.close} dialogClassName="full-width-modal">
                     <Modal.Header closeButton>
