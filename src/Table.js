@@ -10,17 +10,21 @@ export default class Table extends Component {
             x: props.x,
             y: props.y,
             radius: 30,
-            guests: props.guests,
             tooltip: {
                 visible: false,
                 x: 0,
                 y: 0
             }
         };
-        this.showTooltip = this.showTooltip.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
+        this.showTooltip = this.showTooltip.bind(this);
         this.hideTooltip = this.hideTooltip.bind(this);
-        this.coordsOfGuest = this.coordsOfGuest.bind(this)
+        this.coordsOfGuest = this.coordsOfGuest.bind(this);
+        this.handleEdit = this.handleEdit.bind(this)
+    }
+
+    handleEdit() {
+        this.props.editHandler(this.props.id)
     }
 
     onDragEnd(e) {
@@ -36,7 +40,6 @@ export default class Table extends Component {
                 visible: true,
                 x: this.state.x,
                 y: this.state.y,
-                guests: this.state.guests
             }
         })
     }
@@ -72,6 +75,7 @@ export default class Table extends Component {
                     radius={this.state.radius}
                     fill={this.state.color}
                     onClick={this.showTooltip}
+                    onDblClick={this.handleEdit}
                     onDragEnd={this.onDragEnd}
                     onMouseEnter={this.showTooltip}
                     onMouseOut={this.hideTooltip}

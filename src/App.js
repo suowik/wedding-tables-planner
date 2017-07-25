@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Tables from './Tables.js';
 import GuestList from './GuestList.js';
+import EditTable from './EditTable.js';
+
 
 class App extends Component {
 
@@ -10,6 +12,8 @@ class App extends Component {
         this.assignGuestToTable = this.assignGuestToTable.bind(this);
         this.refreshState = this.refreshState.bind(this);
         this.findGuestAcrossTablesAndRemoveIt = this.findGuestAcrossTablesAndRemoveIt.bind(this);
+        this.closeEditMode = this.closeEditMode.bind(this);
+        this.editHandler = this.editHandler.bind(this);
         let width = 900;
         let height = 700;
         let guests = ["Klaudia Zachara",
@@ -169,10 +173,35 @@ class App extends Component {
             width: width,
             height: height,
             tables: tables,
-            state: ""
+            state: "",
+            editMode: {
+                active: false,
+                allGuests: guests,
+                table: {label: "", guests: []}
+            }
         }
     }
 
+    closeEditMode(){
+        this.setState({
+            editMode: {
+                active: false,
+                allGuests: this.state.guests,
+                table: {label: "", guests: []},
+            }
+        })
+    }
+
+    editHandler(tableId) {
+        let table = this.state.tables.filter(t=> t.id === tableId)[0];
+        this.setState({
+            editMode: {
+                active: true,
+                allGuests: this.state.guests,
+                table: table
+            }
+        })
+    }
 
     initialTablesSetup(guests, width) {
         let x = 0;
@@ -196,11 +225,11 @@ class App extends Component {
         });
     };
 
-    assignGuestToTable(guest, tableIndex) {
+    assignGuestToTable(guest, tableId) {
         this.findGuestAcrossTablesAndRemoveIt(guest);
         let tables = this.state.tables;
-        if (tableIndex !== "---") {
-            let table = tables[tableIndex];
+        if (tableId !== "---") {
+            let table = tables[tableId];
             if (table.guests.length < 10) {
                 table.guests.push(guest)
             }
@@ -231,7 +260,6 @@ class App extends Component {
             tables: newState.tables,
             state: pasted
         });
-        console.log(newState)
     }
 
     render() {
@@ -255,12 +283,17 @@ class App extends Component {
                         <GuestList guests={this.state.guests}
                                    assignGuestToTable={this.assignGuestToTable}
                                    tables={this.state.tables}/>
+                        <EditTable editMode={this.state.editMode}
+                                   assignGuestToTable={this.assignGuestToTable}
+                                   closeEditMode={this.closeEditMode}/>
                     </div>
                     <div className="col-lg-9">
+
                         <Tables guests={this.state.guests}
                                 tables={this.state.tables}
                                 width={this.state.width}
-                                height={this.state.height}/>
+                                height={this.state.height}
+                                editHandler={this.editHandler}/>
                     </div>
                 </div>
             </div>

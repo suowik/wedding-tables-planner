@@ -17,8 +17,7 @@ export default class Tables extends Component {
                                       id={i.id}
                                       label={i.label}
                                       guests={i.guests}
-                                      showTooltip={this.showTooltip}
-                                      hideTooltip={this.hideTooltip}
+                                      editHandler={this.props.editHandler}
                         />
                     })}
                 </Layer>
