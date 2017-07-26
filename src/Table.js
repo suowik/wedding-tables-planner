@@ -69,8 +69,7 @@ export default class Table extends Component {
                     y={this.props.y}
                     radius={this.state.radius}
                     fill={this.state.color}
-                    onClick={this.showTooltip}
-                    onDblClick={this.handleEdit}
+                    onClick={this.handleEdit}
                     onDragEnd={this.onDragEnd}
                     onMouseEnter={this.showTooltip}
                     onMouseOut={this.hideTooltip}
