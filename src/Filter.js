@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 
 export default class Filter extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             searchPhrase: "",
@@ -52,6 +52,7 @@ export default class Filter extends Component {
                         <option value={"bride-friends"}>Znajomi Młodej</option>
                         <option value={"bride-family"}>Rodzina Młodej</option>
                         <option value={"groom-family"}>Rodzina Młodego</option>
+                        <option value={"non-assigned"}>Bez stołu</option>
                         <option value={"others"}>Inni</option>
                         <option value={"all"}>---</option>
                     </select>
@@ -62,8 +63,11 @@ export default class Filter extends Component {
                     handleDoubleClick={this.props.handleDoubleClick}
                     filtered={this.props.guests
                         .filter(g => {
+                            console.log(this.state.type)
                             let type;
-                            if (this.state.type !== "all") {
+                            if (this.state.type === "non-assigned") {
+                                type = g.table.toString() === ""
+                            } else if (this.state.type !== "all") {
                                 type = g.type === this.state.type;
                             } else {
                                 type = true

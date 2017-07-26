@@ -106,7 +106,7 @@ class App extends Component {
         if (tableId !== "---") {
             tables.forEach(t => {
                 if (t.id === parseInt(tableId, 0)) {
-                    if (t.guests.length < 10) {
+                    if (t.guests.length < 12) {
                         guest.table = tableId;
                         t.guests.push(guest)
                     }
