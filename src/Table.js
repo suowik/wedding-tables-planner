@@ -99,7 +99,7 @@ export default class Table extends Component {
                     fontSize={8}
                     padding={0}
                     fill={"#fff"}
-                    text={this.props.label}
+                    text={this.props.label + "\ngoście: "+this.props.guests.length}
                 />
                 <Circle
                     onClick={this.handleEdit}
