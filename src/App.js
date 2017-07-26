@@ -18,6 +18,7 @@ class App extends Component {
         this.closeEditMode = this.closeEditMode.bind(this);
         this.editHandler = this.editHandler.bind(this);
         this.addGuestsHandler = this.addGuestsHandler.bind(this);
+        this.moveTable = this.moveTable.bind(this);
         this.reorderGuestsAtTable = this.reorderGuestsAtTable.bind(this);
         let width = 900;
         let height = 600;
@@ -133,6 +134,19 @@ class App extends Component {
         })
     }
 
+    moveTable(tableId, newX, newY) {
+        let tables = this.state.tables;
+        tables.forEach(t => {
+            if (t.id === tableId) {
+                t.x = newX;
+                t.y = newY
+            }
+        });
+        this.setState({
+            tables: tables
+        })
+    }
+
     render() {
         return (
             <div className="container">
@@ -173,7 +187,8 @@ class App extends Component {
                                 tables={this.state.tables}
                                 width={this.state.width}
                                 height={this.state.height}
-                                editHandler={this.editHandler}/>
+                                editHandler={this.editHandler}
+                                moveHandler={this.moveTable}/>
                     </div>
                 </div>
             </div>

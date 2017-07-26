@@ -7,8 +7,6 @@ export default class Table extends Component {
         super(props);
         this.state = {
             color: 'grey',
-            x: props.x,
-            y: props.y,
             radius: 30,
             tooltip: {
                 visible: false,
@@ -28,18 +26,15 @@ export default class Table extends Component {
     }
 
     onDragEnd(e) {
-        this.setState({
-            x: e.evt.layerX,
-            y: e.evt.layerY
-        })
+        this.props.moveHandler(this.props.id, e.evt.layerX, e.evt.layerY)
     }
 
     showTooltip() {
         this.setState({
             tooltip: {
                 visible: true,
-                x: this.state.x,
-                y: this.state.y,
+                x: this.props.x,
+                y: this.props.y,
             }
         })
     }
@@ -57,7 +52,7 @@ export default class Table extends Component {
     coordsOfGuest(i) {
         let rotation = i === 0 ? 0 : Math.PI / 180 * (i * 36);
         let point = {x: 0, y: 30};
-        let center = {x: this.state.x, y: this.state.y};
+        let center = {x: this.props.x, y: this.props.y};
         let smallCircleCoords = {x: center.x + point.x, y: center.y + point.y};
         let afterRotation = {
             x: (smallCircleCoords.x - center.x) * Math.cos(rotation) + (smallCircleCoords.y - center.y) * Math.sin(rotation) + center.x,
@@ -70,8 +65,8 @@ export default class Table extends Component {
         return (
             <Group>
                 <Circle
-                    x={this.state.x}
-                    y={this.state.y}
+                    x={this.props.x}
+                    y={this.props.y}
                     radius={this.state.radius}
                     fill={this.state.color}
                     onClick={this.showTooltip}
@@ -97,8 +92,8 @@ export default class Table extends Component {
                     />
                 })}
                 <Text
-                    x={this.state.x - 17}
-                    y={this.state.y - 5}
+                    x={this.props.x - 17}
+                    y={this.props.y - 5}
                     width={50}
                     height={10}
                     padding={0}

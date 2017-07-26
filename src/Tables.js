@@ -17,6 +17,7 @@ export default class Tables extends Component {
                                       id={i.id}
                                       label={i.label}
                                       guests={i.guests}
+                                      moveHandler={this.props.moveHandler}
                                       editHandler={this.props.editHandler}
                         />
                     })}
