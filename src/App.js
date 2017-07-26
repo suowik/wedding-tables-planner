@@ -18,6 +18,7 @@ class App extends Component {
         this.closeEditMode = this.closeEditMode.bind(this);
         this.editHandler = this.editHandler.bind(this);
         this.addGuestsHandler = this.addGuestsHandler.bind(this);
+        this.reorderGuestsAtTable = this.reorderGuestsAtTable.bind(this);
         let width = 900;
         let height = 600;
         let guests = [];
@@ -108,7 +109,7 @@ class App extends Component {
     findGuestAcrossTablesAndRemoveIt(guest) {
         this.state.tables.forEach(t => {
             let guests = t.guests;
-            t.guests = guests.filter(g=>g.id !== guest.id);
+            t.guests = guests.filter(g => g.id !== guest.id);
             guest.table = ""
         });
     }
@@ -118,6 +119,18 @@ class App extends Component {
         let pasted = e.clipboardData.getData('text/plain');
         let newState = JSON.parse(Buffer.from(pasted, 'base64').toString());
         this.setState(newState);
+    }
+
+    reorderGuestsAtTable(table, guests) {
+        let tables = this.state.tables;
+        tables.forEach(t => {
+            if (t.id === table.id) {
+                t.guests = guests
+            }
+        });
+        this.setState({
+            tables: tables
+        })
     }
 
     render() {
@@ -152,7 +165,8 @@ class App extends Component {
                                    guests={this.state.guests}
                                    tables={this.state.tables}
                                    assignGuestToTable={this.assignGuestToTable}
-                                   closeEditMode={this.closeEditMode}/>
+                                   closeEditMode={this.closeEditMode}
+                                   reorderGuestsAtTable={this.reorderGuestsAtTable}/>
                     </div>
                     <div className="col-lg-9">
                         <Tables guests={this.state.guests}

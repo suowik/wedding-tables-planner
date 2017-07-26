@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {Button, Modal} from "react-bootstrap";
 import {Draggable, Droppable} from 'react-drag-and-drop'
+import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+
+
 import Filter from './Filter.js'
 
 class TableGuestList extends Component {
@@ -38,13 +41,10 @@ export default class EditTable extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            searchPhrase: "",
-            type: "all"
-        };
         this.close = this.close.bind(this);
         this.onDrop = this.onDrop.bind(this);
         this.handleDoubleClick = this.handleDoubleClick.bind(this);
+        this.reorderGuests = this.reorderGuests.bind(this);
     }
 
     close() {
@@ -59,6 +59,10 @@ export default class EditTable extends Component {
     handleDoubleClick(guestId) {
         let found = this.props.guests.filter(g => g.id === guestId);
         this.props.assignGuestToTable(found[0], this.props.editMode.table.id)
+    }
+
+    reorderGuests(oldIndex, newIndex) {
+        this.props.reorderGuestsAtTable(this.props.editMode.table, arrayMove(this.props.editMode.table.guests, oldIndex, newIndex))
     }
 
     render() {
@@ -82,18 +86,47 @@ export default class EditTable extends Component {
                             <Droppable
                                 types={['guest']}
                                 onDrop={this.onDrop}>
-                                <ol>
-                                    {this.props.editMode.table.guests.map(g => <li key={g.id}
-                                                                                   value={g.id}>{g.name}</li>)}
-                                </ol>
+                                <SortableComponent guests={this.props.editMode.table.guests}
+                                                   onSortEnd={this.reorderGuests}/>
                             </Droppable>
                         </div>
                     </div>
                 </Modal.Body>
-                < Modal.Footer >
-                    <Button onClick={this.close}>Close</Button>
-                </Modal.Footer >
-            </ Modal >
+                <Modal.Footer>
+                    <Button onClick={this.close}>Zamknij</Button>
+                </Modal.Footer>
+            </Modal>
         )
+    }
+}
+
+
+const SortableItem = SortableElement(({guest}) =>
+    <li value={guest.id}>{guest.name}</li>
+);
+
+const SortableList = SortableContainer(({guests}) => {
+    return (
+        <ol>
+            {guests.map((guest, index) => (
+                <SortableItem key={guest.id} index={index} guest={guest}/>
+            ))}
+        </ol>
+    );
+});
+
+class SortableComponent extends Component {
+
+    constructor(props) {
+        super(props);
+        this.onSortEnd = this.onSortEnd.bind(this)
+    }
+
+    onSortEnd({oldIndex, newIndex}) {
+        this.props.onSortEnd(oldIndex, newIndex)
+    }
+
+    render() {
+        return <SortableList guests={this.props.guests} onSortEnd={this.onSortEnd}/>;
     }
 }
