@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Circle, Text, Group} from 'react-konva'
-import TableTooltip from './TableTooltip.js'
 
 export default class Table extends Component {
     constructor(props) {
@@ -8,11 +7,6 @@ export default class Table extends Component {
         this.state = {
             color: 'grey',
             radius: 30,
-            tooltip: {
-                visible: false,
-                x: 0,
-                y: 0
-            },
             opacity: 0
         };
         this.onDragStart = this.onDragStart.bind(this);
@@ -42,23 +36,21 @@ export default class Table extends Component {
     }
 
     showTooltip() {
-        this.setState({
-            tooltip: {
-                visible: true,
-                x: this.props.x,
-                y: this.props.y,
-            }
-        })
+        this.props.setTooltipLocation({
+            visible: true,
+            x: this.props.x,
+            y: this.props.y,
+            guests: this.props.guests
+        });
     }
 
     hideTooltip() {
-        this.setState({
-            tooltip: {
-                visible: false,
-                x: 0,
-                y: 0
-            }
-        })
+        this.props.setTooltipLocation({
+            visible: false,
+            x: 0,
+            y: 0,
+            guests: []
+        });
     }
 
     coordsOfGuest(i) {
@@ -107,8 +99,6 @@ export default class Table extends Component {
                     fill={"#fff"}
                     text={this.props.label}
                 />
-                {this.state.tooltip.visible && this.props.guests.length > 0 &&
-                <TableTooltip x={this.state.tooltip.x} y={this.state.tooltip.y} guests={this.props.guests}/>}
                 <Circle
                     onClick={this.handleEdit}
                     onDragEnd={this.onDragEnd}

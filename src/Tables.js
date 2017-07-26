@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Stage, Layer, Rect} from 'react-konva'
 import Table from './Table.js'
+import TableTooltip from './TableTooltip.js'
 
 export default class Tables extends Component {
 
@@ -19,8 +20,11 @@ export default class Tables extends Component {
                                       guests={i.guests}
                                       moveHandler={this.props.moveHandler}
                                       editHandler={this.props.editHandler}
+                                      setTooltipLocation={this.props.setTooltipLocation}
                         />
                     })}
+                    {this.props.tooltip.visible &&
+                    <TableTooltip data={this.props.tooltip} />}
                 </Layer>
             </Stage>
         )
