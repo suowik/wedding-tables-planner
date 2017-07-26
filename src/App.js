@@ -159,7 +159,7 @@ class App extends Component {
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="form-group">
-                            <label htmlFor="filter">Skopiuj stan:</label>
+                            <label htmlFor="filter">Skopiuj/wczytaj stan:</label>
                             <textarea id="filter"
                                       type="text"
                                       value={new Buffer(JSON.stringify(this.state)).toString('base64')}
