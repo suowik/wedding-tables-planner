@@ -23,7 +23,7 @@ export default class Tables extends Component {
                                       setTooltipLocation={this.props.setTooltipLocation}
                         />
                     })}
-                    {this.props.tooltip.visible &&
+                    {this.props.tooltip.visible && this.props.tooltip.guests.length > 0 &&
                     <TableTooltip data={this.props.tooltip} />}
                 </Layer>
             </Stage>
