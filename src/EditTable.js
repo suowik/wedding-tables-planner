@@ -73,7 +73,6 @@ export default class EditTable extends Component {
     }
 
     handleRemove(guestId) {
-        console.log(guestId)
         this.props.handleRemove({id:guestId})
     }
 
