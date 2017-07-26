@@ -17,7 +17,7 @@ class Guests extends Component {
                         return <tr key={guest.id} className={className}>
                             <td>{guest.name}</td>
                             <td>
-                                <select onChange={this.assignGuestToTable(guest)} value={guest.table}>
+                                <select onChange={this.assignGuestToTable(guest)} value={guest.table} className="form-control">
                                     <option value={"---"}>---</option>
                                     {this.props.tables.map(table =>
                                         <option key={guest.id + table.id}
