@@ -45,6 +45,7 @@ export default class EditTable extends Component {
         this.onDrop = this.onDrop.bind(this);
         this.handleDoubleClick = this.handleDoubleClick.bind(this);
         this.reorderGuests = this.reorderGuests.bind(this);
+        this.editTableName = this.editTableName.bind(this);
     }
 
     close() {
@@ -62,14 +63,23 @@ export default class EditTable extends Component {
     }
 
     reorderGuests(oldIndex, newIndex) {
-        this.props.reorderGuestsAtTable(this.props.editMode.table, arrayMove(this.props.editMode.table.guests, oldIndex, newIndex))
+        this.props.reorderGuestsAtTable(this.props.editMode.table.id, arrayMove(this.props.editMode.table.guests, oldIndex, newIndex))
+    }
+
+    editTableName(e) {
+        e.preventDefault();
+        this.props.editTableName(this.props.editMode.table, e.target.value)
     }
 
     render() {
         return (
             <Modal show={this.props.editMode.active} onHide={this.close}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{this.props.editMode.table.label}</Modal.Title>
+                    <Modal.Title>
+                        <input type="text" className="form-control"
+                               value={this.props.editMode.table.label}
+                               onChange={this.editTableName}/>
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="container-fluid">

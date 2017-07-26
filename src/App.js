@@ -20,6 +20,7 @@ class App extends Component {
         this.addGuestsHandler = this.addGuestsHandler.bind(this);
         this.moveTable = this.moveTable.bind(this);
         this.reorderGuestsAtTable = this.reorderGuestsAtTable.bind(this);
+        this.editTableName = this.editTableName.bind(this);
         let width = 900;
         let height = 600;
         let guests = [];
@@ -95,11 +96,15 @@ class App extends Component {
         this.findGuestAcrossTablesAndRemoveIt(guest);
         let tables = this.state.tables;
         if (tableId !== "---") {
-            let table = tables[tableId];
-            guest.table = tableId;
-            if (table.guests.length < 10) {
-                table.guests.push(guest)
-            }
+            tables.forEach(t => {
+                if (t.id === tableId) {
+                    if (t.guests.length < 10) {
+                        guest.table = tableId;
+                        t.guests.push(guest)
+                    }
+                }
+            })
+
         }
 
         this.setState({
@@ -122,10 +127,10 @@ class App extends Component {
         this.setState(newState);
     }
 
-    reorderGuestsAtTable(table, guests) {
+    reorderGuestsAtTable(tableId, guests) {
         let tables = this.state.tables;
         tables.forEach(t => {
-            if (t.id === table.id) {
+            if (t.id === tableId) {
                 t.guests = guests
             }
         });
@@ -144,6 +149,21 @@ class App extends Component {
         });
         this.setState({
             tables: tables
+        })
+    }
+
+    editTableName(tableId, newLabel) {
+        let tables = this.state.tables;
+        tables.forEach(t => {
+            if (t.id === tableId) {
+                t.label = newLabel
+            }
+        });
+        let editMode = this.state.editMode;
+        editMode.table.label = newLabel;
+        this.setState({
+            tables: tables,
+            editMode: editMode
         })
     }
 
@@ -180,7 +200,9 @@ class App extends Component {
                                    tables={this.state.tables}
                                    assignGuestToTable={this.assignGuestToTable}
                                    closeEditMode={this.closeEditMode}
-                                   reorderGuestsAtTable={this.reorderGuestsAtTable}/>
+                                   reorderGuestsAtTable={this.reorderGuestsAtTable}
+                                   editTableName={this.editTableName}
+                        />
                     </div>
                     <div className="col-lg-9">
                         <Tables guests={this.state.guests}

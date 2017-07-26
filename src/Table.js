@@ -93,8 +93,9 @@ export default class Table extends Component {
                 <Text
                     x={this.props.x - 17}
                     y={this.props.y - 5}
-                    width={50}
-                    height={10}
+                    width={40}
+                    height={30}
+                    fontSize={8}
                     padding={0}
                     fill={"#fff"}
                     text={this.props.label}
