@@ -13,11 +13,11 @@ class GuestsTextArea extends Component {
 
     render() {
         return (
-            <div className="col-lg-6">
+            <div className="col-lg-3">
                 <div className="form-group">
                     <label>{this.props.label}</label>
                     <textarea className="form-control"
-                              rows={15}
+                              rows={11}
                               value={this.props.guests.filter(g => g.type === this.props.type).map(g => g.name).join("\n")}
                               onPaste={this.handlePaste(this.props.type)}/>
                 </div>
@@ -68,8 +68,6 @@ export default class ManageGuests extends Component {
                                 <GuestsTextArea type={"groom-family"} label={"Rodzina Pana Młodego"}
                                                 guests={this.props.guests}
                                                 addGuestsHandler={this.props.addGuestsHandler}/>
-                            </div>
-                            <div className="row">
                                 <GuestsTextArea type={"bride-friends"} label={"Znajomi Panny Młodej"}
                                                 guests={this.props.guests}
                                                 addGuestsHandler={this.props.addGuestsHandler}/>
