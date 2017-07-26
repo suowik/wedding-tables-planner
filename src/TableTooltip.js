@@ -8,8 +8,8 @@ export default class TableTooltip extends Component {
                 <Rect
                     x={this.props.data.x}
                     y={this.props.data.y}
-                    width={120}
-                    height={150}
+                    width={140}
+                    height={this.props.data.guests.length * 14}
                     stroke={"black"}
                     fill={"#fff"}
                     padding={20}
@@ -18,8 +18,8 @@ export default class TableTooltip extends Component {
                 <Text
                     x={this.props.data.x}
                     y={this.props.data.y}
-                    width={120}
-                    height={150}
+                    width={150}
+                    height={this.props.data.guests.length * 14}
                     padding={10}
                     fill={"#000"}
                     text={this.props.data.guests.map(g => g.name).join("\n")}
