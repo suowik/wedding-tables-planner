@@ -63,7 +63,6 @@ export default class Filter extends Component {
                     handleDoubleClick={this.props.handleDoubleClick}
                     filtered={this.props.guests
                         .filter(g => {
-                            console.log(this.state.type)
                             let type;
                             if (this.state.type === "non-assigned") {
                                 type = g.table.toString() === ""

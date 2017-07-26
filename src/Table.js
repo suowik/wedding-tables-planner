@@ -54,7 +54,9 @@ export default class Table extends Component {
     }
 
     coordsOfGuest(i) {
-        let rotation = i === 0 ? 0 : Math.PI / 180 * (i * 36);
+        let degree = parseInt(360 / this.props.guests.length,0);
+        console.log(this.props.label, degree)
+        let rotation = i === 0 ? 0 : Math.PI / 180 * (i * degree);
         let point = {x: 0, y: 30};
         let center = {x: this.props.x, y: this.props.y};
         let smallCircleCoords = {x: center.x + point.x, y: center.y + point.y};
@@ -67,7 +69,7 @@ export default class Table extends Component {
 
     render() {
         return (
-            <Group>
+            <Group key={this.props.label}>
                 <Circle
                     x={this.props.x}
                     y={this.props.y}
@@ -80,7 +82,7 @@ export default class Table extends Component {
                 {this.props.guests.map((e, i) => {
                     let coords = this.coordsOfGuest(i);
                     return <Circle
-                        key={coords.y + coords.x}
+                        key={i + this.props.label}
                         x={coords.x}
                         y={coords.y}
                         radius={6}
