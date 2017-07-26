@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Circle, Text, Group} from 'react-konva'
+import {Circle, Text, Group, Rect} from 'react-konva'
 import TableTooltip from './TableTooltip.js'
 
 export default class Table extends Component {
@@ -12,8 +12,10 @@ export default class Table extends Component {
                 visible: false,
                 x: 0,
                 y: 0
-            }
+            },
+            opacity: 0
         };
+        this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.showTooltip = this.showTooltip.bind(this);
         this.hideTooltip = this.hideTooltip.bind(this);
@@ -26,7 +28,17 @@ export default class Table extends Component {
     }
 
     onDragEnd(e) {
+        this.setState({
+            opacity: 0
+        });
         this.props.moveHandler(this.props.id, e.evt.layerX, e.evt.layerY)
+    }
+
+    onDragStart(){
+        this.hideTooltip();
+        this.setState({
+            opacity: 0.5
+        });
     }
 
     showTooltip() {
@@ -69,14 +81,9 @@ export default class Table extends Component {
                     y={this.props.y}
                     radius={this.state.radius}
                     fill={this.state.color}
-                    onClick={this.handleEdit}
-                    onDragEnd={this.onDragEnd}
-                    onMouseEnter={this.showTooltip}
-                    onMouseOut={this.hideTooltip}
-                    onDragStart={this.hideTooltip}
                     stroke={"black"}
                     strokeWidth={1}
-                    draggable={true}
+
                 />
                 {this.props.guests.map((e, i) => {
                     let coords = this.coordsOfGuest(i);
@@ -102,6 +109,19 @@ export default class Table extends Component {
                 />
                 {this.state.tooltip.visible && this.props.guests.length > 0 &&
                 <TableTooltip x={this.state.tooltip.x} y={this.state.tooltip.y} guests={this.props.guests}/>}
+                <Circle
+                    onClick={this.handleEdit}
+                    onDragEnd={this.onDragEnd}
+                    onMouseEnter={this.showTooltip}
+                    onMouseOut={this.hideTooltip}
+                    onDragStart={this.onDragStart}
+                    draggable={true}
+                    x={this.props.x}
+                    y={this.props.y}
+                    radius={this.state.radius+5}
+                    fill={this.state.color}
+                    opacity={this.state.opacity}
+                />
             </Group>
         );
     }
