@@ -5,6 +5,25 @@ import TableTooltip from './TableTooltip.js'
 
 export default class Tables extends Component {
 
+    constructor(props){
+        super(props);
+        this.state = {
+            tooltip:{
+                visible: false,
+                x: 0,
+                y: 0,
+                guests: []
+            }
+        };
+        this.setTooltipLocation = this.setTooltipLocation.bind(this);
+    }
+
+    setTooltipLocation(tooltip){
+        this.setState({
+            tooltip: tooltip
+        })
+    }
+
     render() {
         return (
             <Stage width={this.props.width} height={this.props.height}>
@@ -20,11 +39,11 @@ export default class Tables extends Component {
                                       guests={i.guests}
                                       moveHandler={this.props.moveHandler}
                                       editHandler={this.props.editHandler}
-                                      setTooltipLocation={this.props.setTooltipLocation}
+                                      setTooltipLocation={this.setTooltipLocation}
                         />
                     })}
-                    {this.props.tooltip.visible && this.props.tooltip.guests.length > 0 &&
-                    <TableTooltip data={this.props.tooltip} />}
+                    {this.state.tooltip.visible && this.state.tooltip.guests.length > 0 &&
+                    <TableTooltip data={this.state.tooltip} />}
                 </Layer>
             </Stage>
         )

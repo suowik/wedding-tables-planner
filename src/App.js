@@ -22,7 +22,6 @@ class App extends Component {
         this.reorderGuestsAtTable = this.reorderGuestsAtTable.bind(this);
         this.editTableName = this.editTableName.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
-        this.setTooltipLocation = this.setTooltipLocation.bind(this);
         let width = 900;
         let height = 600;
         let guests = [];
@@ -36,12 +35,6 @@ class App extends Component {
                 active: false,
                 allGuests: guests,
                 table: {label: "", guests: []}
-            },
-            tooltip: {
-                active: false,
-                x: 0,
-                y: 0,
-                guests: []
             }
         }
     }
@@ -193,12 +186,6 @@ class App extends Component {
         })
     }
 
-    setTooltipLocation(tooltip){
-        this.setState({
-            tooltip: tooltip
-        })
-    }
-
     render() {
         return (
             <div className="container">
@@ -244,8 +231,7 @@ class App extends Component {
                                 height={this.state.height}
                                 editHandler={this.editHandler}
                                 moveHandler={this.moveTable}
-                                tooltip={this.state.tooltip}
-                                setTooltipLocation={this.setTooltipLocation}/>
+                        />
                     </div>
                 </div>
             </div>
