@@ -97,7 +97,7 @@ class App extends Component {
         let tables = this.state.tables;
         if (tableId !== "---") {
             tables.forEach(t => {
-                if (t.id === tableId) {
+                if (t.id === parseInt(tableId)) {
                     if (t.guests.length < 10) {
                         guest.table = tableId;
                         t.guests.push(guest)
