@@ -21,6 +21,7 @@ class App extends Component {
         this.moveTable = this.moveTable.bind(this);
         this.reorderGuestsAtTable = this.reorderGuestsAtTable.bind(this);
         this.editTableName = this.editTableName.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
         let width = 900;
         let height = 600;
         let guests = [];
@@ -97,7 +98,7 @@ class App extends Component {
         let tables = this.state.tables;
         if (tableId !== "---") {
             tables.forEach(t => {
-                if (t.id === parseInt(tableId)) {
+                if (t.id === parseInt(tableId, 0)) {
                     if (t.guests.length < 10) {
                         guest.table = tableId;
                         t.guests.push(guest)
@@ -110,6 +111,24 @@ class App extends Component {
         this.setState({
             tables: tables
         });
+    }
+
+    handleRemove(guest) {
+        let tables = this.state.tables;
+        tables.forEach(t => {
+            let guests = t.guests;
+            t.guests = guests.filter(g => g.id !== guest.id);
+        });
+        let guests = this.state.guests;
+        guests.forEach(g => {
+            if (g.id === guest.id) {
+                g.table = ""
+            }
+        });
+        this.setState({
+            tables: tables,
+            guests: guests
+        })
     }
 
     findGuestAcrossTablesAndRemoveIt(guest) {
@@ -202,6 +221,7 @@ class App extends Component {
                                    closeEditMode={this.closeEditMode}
                                    reorderGuestsAtTable={this.reorderGuestsAtTable}
                                    editTableName={this.editTableName}
+                                   handleRemove={this.handleRemove}
                         />
                     </div>
                     <div className="col-lg-9">

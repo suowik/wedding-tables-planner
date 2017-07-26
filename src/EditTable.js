@@ -46,6 +46,7 @@ export default class EditTable extends Component {
         this.handleDoubleClick = this.handleDoubleClick.bind(this);
         this.reorderGuests = this.reorderGuests.bind(this);
         this.editTableName = this.editTableName.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
     }
 
     close() {
@@ -69,6 +70,11 @@ export default class EditTable extends Component {
     editTableName(e) {
         e.preventDefault();
         this.props.editTableName(this.props.editMode.table, e.target.value)
+    }
+
+    handleRemove(guestId) {
+        console.log(guestId)
+        this.props.handleRemove({id:guestId})
     }
 
     render() {
@@ -97,6 +103,7 @@ export default class EditTable extends Component {
                                 types={['guest']}
                                 onDrop={this.onDrop}>
                                 <SortableComponent guests={this.props.editMode.table.guests}
+                                                   removeHandler={this.handleRemove}
                                                    onSortEnd={this.reorderGuests}/>
                             </Droppable>
                         </div>
@@ -110,18 +117,35 @@ export default class EditTable extends Component {
     }
 }
 
+function removeGuest(guestId, handler) {
+    return (e) => {
+        e.preventDefault();
+        handler(guestId)
+    }
+}
 
-const SortableItem = SortableElement(({guest}) =>
-    <li value={guest.id}>{guest.name}</li>
+const SortableItem = SortableElement(({data}) =>
+
+    <tr>
+        <td>
+            <button className="btn btn-xs btn-danger" onClick={removeGuest(data.guest.id, data.removeHandler)}>-
+            </button>
+        </td>
+        <td value={data.guest.id}>{data.index + 1}. {data.guest.name}</td>
+    </tr>
 );
 
-const SortableList = SortableContainer(({guests}) => {
+const SortableList = SortableContainer(({data}) => {
+
     return (
-        <ol>
-            {guests.map((guest, index) => (
-                <SortableItem key={guest.id} index={index} guest={guest}/>
+        <table className="table table-striped">
+            <tbody>
+            {data.guests.map((guest, index) => (
+                <SortableItem key={guest.id} index={index}
+                              data={{guest: guest, index: index, removeHandler: data.removeHandler}}/>
             ))}
-        </ol>
+            </tbody>
+        </table>
     );
 });
 
@@ -137,6 +161,7 @@ class SortableComponent extends Component {
     }
 
     render() {
-        return <SortableList guests={this.props.guests} onSortEnd={this.onSortEnd}/>;
+        return <SortableList data={{guests: this.props.guests, removeHandler: this.props.removeHandler}}
+                             onSortEnd={this.onSortEnd}/>;
     }
 }

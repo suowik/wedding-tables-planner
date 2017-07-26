@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Circle, Text, Group, Rect} from 'react-konva'
+import {Circle, Text, Group} from 'react-konva'
 import TableTooltip from './TableTooltip.js'
 
 export default class Table extends Component {
