@@ -9,6 +9,7 @@ import {Router, Route, hashHistory, IndexRoute} from 'react-router'
 import Login from './auth/Login.js'
 import Logout from './auth/Logout.js'
 import Layout from './Layout.js'
+import Register from './Register.js'
 
 import TablesPlanner from './planner/TablesPlanner.js';
 
@@ -31,6 +32,7 @@ class Routes extends Component {
                     <IndexRoute component={TablesPlanner}/>
                 </Route>
                 <Route path="/login" component={Login}/>
+                <Route path="/register" component={Register}/>
                 <Route path="/logout" component={Logout}/>
             </Router>
         )

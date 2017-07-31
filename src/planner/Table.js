@@ -55,7 +55,6 @@ export default class Table extends Component {
 
     coordsOfGuest(i) {
         let degree = parseInt(360 / this.props.guests.length,0);
-        console.log(this.props.label, degree)
         let rotation = i === 0 ? 0 : Math.PI / 180 * (i * degree);
         let point = {x: 0, y: 30};
         let center = {x: this.props.x, y: this.props.y};

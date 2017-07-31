@@ -6,14 +6,40 @@ import GuestList from './GuestList.js';
 import EditTable from './EditTable.js';
 import ManageGuests from './ManageGuests.js';
 import PrintView from './PrintView.js';
+import globals from '../common/globals.js'
+import auth from '../auth/auth.js'
+import request from 'request'
+
+
+let API_URL = globals['API_URL'];
+
 
 class App extends Component {
+
+    componentDidMount() {
+        let loggedUser = auth.loggedUser();
+        let token = loggedUser.token;
+        let weddingId = loggedUser.weddingId;
+        if (weddingId) {
+            let requestData = {
+                method: 'get',
+                headers: {'x-access-token': token},
+                json: true,
+                url: API_URL + '/weddings/' + weddingId
+            };
+            let that = this;
+            request(requestData, (err, res, body) => {
+                that.setState(body)
+            })
+        }
+
+    }
 
     constructor(props) {
         super(props);
         this.initialTablesSetup = this.initialTablesSetup.bind(this);
         this.assignGuestToTable = this.assignGuestToTable.bind(this);
-        this.pasteStateHandler = this.pasteStateHandler.bind(this);
+        this.updateWedding = this.updateWedding.bind(this);
         this.findGuestAcrossTablesAndRemoveIt = this.findGuestAcrossTablesAndRemoveIt.bind(this);
         this.closeEditMode = this.closeEditMode.bind(this);
         this.editHandler = this.editHandler.bind(this);
@@ -37,6 +63,21 @@ class App extends Component {
                 table: {label: "", guests: []}
             }
         }
+    }
+
+    updateWedding() {
+        let loggedUser = auth.loggedUser();
+        let token = loggedUser.token;
+        let requestData = {
+            method: 'post',
+            headers: {'x-access-token': token},
+            json: true,
+            body: this.state,
+            url: API_URL + '/weddings/update'
+        };
+        request(requestData, (err, res, body) => {
+            loggedUser.weddingId = body._id
+        })
     }
 
     addGuestsHandler(rawGuests, type) {
@@ -139,13 +180,6 @@ class App extends Component {
         });
     }
 
-    pasteStateHandler(e) {
-        e.preventDefault();
-        let pasted = e.clipboardData.getData('text/plain');
-        let newState = JSON.parse(Buffer.from(pasted, 'base64').toString());
-        this.setState(newState);
-    }
-
     reorderGuestsAtTable(tableId, guests) {
         let tables = this.state.tables;
         tables.forEach(t => {
@@ -196,20 +230,9 @@ class App extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-lg-12">
-                        <div className="form-group">
-                            <label htmlFor="filter">Skopiuj/wczytaj stan:</label>
-                            <textarea id="filter"
-                                      type="text"
-                                      value={new Buffer(JSON.stringify(this.state)).toString('base64')}
-                                      className="form-control"
-                                      onPaste={this.pasteStateHandler}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
                     <div className="col-lg-3">
+                        <button className="btn btn-primary" onClick={this.updateWedding}>Zapisz układ</button>
+
                         <GuestList guests={this.state.guests}
                                    assignGuestToTable={this.assignGuestToTable}
                                    tables={this.state.tables}/>

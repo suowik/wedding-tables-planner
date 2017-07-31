@@ -6,10 +6,11 @@ let API_URL = globals['API_URL'];
 
 
 class LoggedUser {
-    constructor(userId, roles, token) {
+    constructor(userId, roles, token, weddingId) {
         this.userId = userId;
         this.roles = roles;
-        this.token = token
+        this.token = token;
+        this.weddingId = weddingId;
     }
 }
 
@@ -23,7 +24,7 @@ export default {
         }
         login(email, pass, (res) => {
             if (res.authenticated) {
-                localStorage.loggedUser = JSON.stringify(new LoggedUser(res.userId, res.roles, res.token));
+                localStorage.loggedUser = JSON.stringify(new LoggedUser(res.userId, res.roles, res.token, res.weddingId));
                 if (cb) cb(true);
                 this.onChange(true)
             } else {
@@ -69,6 +70,7 @@ function login(login, password, cb) {
                 authenticated: true,
                 roles: body.roles,
                 userId: body.userId,
+                weddingId: body.weddingId,
                 token: body.token
             })
         } else {
