@@ -1,7 +1,42 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import React, {Component} from 'react';
+import auth from './auth/auth.js';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import ReactDOM from 'react-dom';
+import registerServiceWorker from './registerServiceWorker';
+import {Router, Route, hashHistory, IndexRoute} from 'react-router'
+
+
+import Login from './auth/Login.js'
+import Logout from './auth/Logout.js'
+import Layout from './Layout.js'
+
+import TablesPlanner from './planner/TablesPlanner.js';
+
+
+function requireAuth(nextState, replace) {
+    if (!auth.loggedIn()) {
+        replace({
+            pathname: '/login',
+            state: {nextPathname: nextState.location.pathname}
+        })
+    }
+}
+
+
+class Routes extends Component {
+    render() {
+        return (
+            <Router history={hashHistory}>
+                <Route path="/" component={Layout} onEnter={requireAuth}>
+                    <IndexRoute component={TablesPlanner}/>
+                </Route>
+                <Route path="/login" component={Login}/>
+                <Route path="/logout" component={Logout}/>
+            </Router>
+        )
+    }
+}
+
+
+ReactDOM.render(<Routes />, document.getElementById('root'));
 registerServiceWorker();
