@@ -9,6 +9,7 @@ import PrintView from './PrintView.js';
 import globals from '../common/globals.js'
 import auth from '../auth/auth.js'
 import request from 'request'
+import ComplexGuestManagement from './ComplexGuestManagement.js'
 
 
 let API_URL = globals['API_URL'];
@@ -226,6 +227,7 @@ class App extends Component {
                 <div className="row">
                     <div className="col-lg-12">
                         <ManageGuests guests={this.state.guests} addGuestsHandler={this.addGuestsHandler}/>
+                        <ComplexGuestManagement guests={this.state.guests}/>
                         <PrintView tables={this.state.tables}/>
                     </div>
                 </div>

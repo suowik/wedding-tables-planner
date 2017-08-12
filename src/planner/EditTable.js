@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Button, Modal} from "react-bootstrap";
 import {Draggable, Droppable} from 'react-drag-and-drop'
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
-
+import GenericModal from '../common/GenericModal.js'
 
 import Filter from './Filter.js'
 
