@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
-import {Button, Modal} from "react-bootstrap";
-import GenericModal from '../common/GenericModal.js'
+import React, {Component} from "react";
+import GenericModal from "../common/GenericModal.js";
 
 class GuestsTextArea extends Component {
 
@@ -31,7 +30,7 @@ export default class ManageGuests extends Component {
 
     render() {
         return (
-            <GenericModal>
+            <GenericModal label="Import gości">
                 <div className="container-fluid">
                     <div className="row">
                         <GuestsTextArea

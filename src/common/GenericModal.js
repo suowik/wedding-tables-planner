@@ -27,10 +27,10 @@ export default class GenericModal extends Component {
     render(){
         return (
             <div className="col-lg-6">
-                <button className="btn btn-block btn-primary" onClick={this.open}>Podgląd gości</button>
+                <button className="btn btn-block btn-primary" onClick={this.open}>{this.props.label}</button>
                 <Modal show={this.state.open} onHide={this.close} dialogClassName="full-width-modal">
                     <Modal.Header closeButton>
-                        <Modal.Title>Zarządzaj gośćmi</Modal.Title>
+                        <Modal.Title>{this.props.label}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {this.props.children}

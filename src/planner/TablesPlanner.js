@@ -29,8 +29,14 @@ class App extends Component {
                 url: API_URL + '/weddings/' + weddingId
             };
             let that = this;
-            request(requestData, (err, res, body) => {
-                that.setState(body)
+            request(requestData, (err, res, state) => {
+                let guests = state.guests.map(g => {
+                    if (g.rsvp === undefined) g.rsvp = "maybe";
+                    if (g.invited === undefined) g.invited = false;
+                    return g
+                });
+
+                that.setState(state)
             })
         }
 
@@ -38,17 +44,6 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        this.initialTablesSetup = this.initialTablesSetup.bind(this);
-        this.assignGuestToTable = this.assignGuestToTable.bind(this);
-        this.updateWedding = this.updateWedding.bind(this);
-        this.findGuestAcrossTablesAndRemoveIt = this.findGuestAcrossTablesAndRemoveIt.bind(this);
-        this.closeEditMode = this.closeEditMode.bind(this);
-        this.editHandler = this.editHandler.bind(this);
-        this.addGuestsHandler = this.addGuestsHandler.bind(this);
-        this.moveTable = this.moveTable.bind(this);
-        this.reorderGuestsAtTable = this.reorderGuestsAtTable.bind(this);
-        this.editTableName = this.editTableName.bind(this);
-        this.handleRemove = this.handleRemove.bind(this);
         let width = 900;
         let height = 600;
         let guests = [];
@@ -66,7 +61,7 @@ class App extends Component {
         }
     }
 
-    updateWedding() {
+    updateWedding = () => {
         let loggedUser = auth.loggedUser();
         let token = loggedUser.token;
         let requestData = {
@@ -79,11 +74,11 @@ class App extends Component {
         request(requestData, (err, res, body) => {
             loggedUser.weddingId = body._id
         })
-    }
+    };
 
-    addGuestsHandler(rawGuests, type) {
+    addGuestsHandler = (rawGuests, type) => {
         let newGuests = rawGuests.map(g => {
-            return {id: shortid.generate(), name: g, type: type, table: ""}
+            return {id: shortid.generate(), name: g, type: type, table: "", invited: false, rsvp: "maybe"}
         });
         let guests = this.state.guests;
         guests = guests.filter(g => g.type !== type);
@@ -92,18 +87,18 @@ class App extends Component {
             guests: guests,
             tables: this.initialTablesSetup(guests, this.state.width)
         })
-    }
+    };
 
-    closeEditMode() {
+    closeEditMode = () => {
         this.setState({
             editMode: {
                 active: false,
                 table: {label: "", guests: []},
             }
         })
-    }
+    };
 
-    editHandler(tableId) {
+    editHandler = (tableId) => {
         let table = this.state.tables.filter(t => t.id === tableId)[0];
         this.setState({
             editMode: {
@@ -111,9 +106,9 @@ class App extends Component {
                 table: table
             }
         })
-    }
+    };
 
-    initialTablesSetup(guests, width) {
+    initialTablesSetup = (guests, width) => {
         let x = 0;
         let rows = 0;
         let current = 0;
@@ -135,7 +130,7 @@ class App extends Component {
         });
     };
 
-    assignGuestToTable(guest, tableId) {
+    assignGuestToTable = (guest, tableId) => {
         this.findGuestAcrossTablesAndRemoveIt(guest);
         let tables = this.state.tables;
         if (tableId !== "---") {
@@ -153,9 +148,9 @@ class App extends Component {
         this.setState({
             tables: tables
         });
-    }
+    };
 
-    handleRemove(guest) {
+    handleRemove = (guest) => {
         let tables = this.state.tables;
         tables.forEach(t => {
             let guests = t.guests;
@@ -171,17 +166,17 @@ class App extends Component {
             tables: tables,
             guests: guests
         })
-    }
+    };
 
-    findGuestAcrossTablesAndRemoveIt(guest) {
+    findGuestAcrossTablesAndRemoveIt = (guest) => {
         this.state.tables.forEach(t => {
             let guests = t.guests;
             t.guests = guests.filter(g => g.id !== guest.id);
             guest.table = ""
         });
-    }
+    };
 
-    reorderGuestsAtTable(tableId, guests) {
+    reorderGuestsAtTable = (tableId, guests) => {
         let tables = this.state.tables;
         tables.forEach(t => {
             if (t.id === tableId) {
@@ -191,9 +186,9 @@ class App extends Component {
         this.setState({
             tables: tables
         })
-    }
+    };
 
-    moveTable(tableId, newX, newY) {
+    moveTable = (tableId, newX, newY) => {
         let tables = this.state.tables;
         tables.forEach(t => {
             if (t.id === tableId) {
@@ -204,9 +199,9 @@ class App extends Component {
         this.setState({
             tables: tables
         })
-    }
+    };
 
-    editTableName(tableId, newLabel) {
+    editTableName = (tableId, newLabel) => {
         let tables = this.state.tables;
         tables.forEach(t => {
             if (t.id === tableId) {
@@ -219,7 +214,26 @@ class App extends Component {
             tables: tables,
             editMode: editMode
         })
-    }
+    };
+
+    invite = (guestId, invited) => {
+        this.withGuest(guestId, (_guest) => _guest.invited = invited);
+    };
+
+    rsvp = (guestId, rsvp) => {
+        this.withGuest(guestId, (_guest) => _guest.rsvp = rsvp);
+    };
+    withGuest = (guestId, cb) => {
+        let guests = this.state.guests;
+        let found = guests.filter(g => g.id === guestId);
+        if (found.length === 1) {
+            let guest = found[0];
+            cb(guest);
+            this.setState({
+                guests: guests
+            })
+        }
+    };
 
     render() {
         return (
@@ -227,7 +241,7 @@ class App extends Component {
                 <div className="row">
                     <div className="col-lg-12">
                         <ManageGuests guests={this.state.guests} addGuestsHandler={this.addGuestsHandler}/>
-                        <ComplexGuestManagement guests={this.state.guests}/>
+                        <ComplexGuestManagement guests={this.state.guests} invite={this.invite} rsvp={this.rsvp}/>
                         <PrintView tables={this.state.tables}/>
                     </div>
                 </div>

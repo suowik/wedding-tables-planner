@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {Button, Modal} from "react-bootstrap";
 import GenericModal from '../common/GenericModal.js'
-
+import _ from 'lodash'
 class GuestType extends Component {
 
     constructor(props) {
@@ -34,7 +33,6 @@ class GuestType extends Component {
     }
 }
 
-
 export default class ComplexGuestManagement extends Component {
 
     constructor(props) {
@@ -42,7 +40,14 @@ export default class ComplexGuestManagement extends Component {
         this.state = {
             open: false,
             phrase: "",
-            type: "all"
+            filter: {type: "all", expected: ""},
+            filters: {
+                family: (guest, type) => guest.type === type,
+                table: (guest, table) => guest.table.toString() === table,
+                rsvp: (guest, rsvp) => guest.rsvp === rsvp,
+                invited: (guest, invited) => guest.invited === JSON.parse(invited),
+                all: (guest, all) => true
+            }
         }
     }
 
@@ -55,14 +60,32 @@ export default class ComplexGuestManagement extends Component {
 
     handleChangeType = (e) => {
         e.preventDefault();
+        let [type, expected] = e.target.value.split(":");
         this.setState({
-            type: e.target.value
+            filter: {type: type, expected: expected || ""}
         })
     };
 
+    invite = (guestId) => {
+        return (e) => {
+            e.preventDefault();
+            const invited = e.target.checked;
+            this.props.invite(guestId, invited)
+        }
+    };
+
+    rsvp = (guestId) => {
+        return (e) => {
+            e.preventDefault();
+            const invited = e.target.value;
+            this.props.rsvp(guestId, invited)
+        }
+    };
+
+
     render() {
         return (
-            <GenericModal>
+            <GenericModal label="Zarządzanie gośćmi">
                 <table className="table table-striped">
                     <thead>
                     <tr>
@@ -78,13 +101,24 @@ export default class ComplexGuestManagement extends Component {
                                     value={this.state.type}
                                     className="form-control"
                                     onChange={this.handleChangeType}>
-                                <option value={"groom-friends"}>Znajomi Młodego</option>
-                                <option value={"bride-friends"}>Znajomi Młodej</option>
-                                <option value={"bride-family"}>Rodzina Młodej</option>
-                                <option value={"groom-family"}>Rodzina Młodego</option>
-                                <option value={"non-assigned"}>Bez stołu</option>
-                                <option value={"others"}>Inni</option>
-                                <option value={"all"}>---</option>
+                                <option value={"all:all"}>---</option>
+                                <optgroup label="Rodzina:">
+                                    <option value={"family:groom-friends"}>Znajomi Młodego</option>
+                                    <option value={"family:bride-friends"}>Znajomi Młodej</option>
+                                    <option value={"family:bride-family"}>Rodzina Młodej</option>
+                                    <option value={"family:groom-family"}>Rodzina Młodego</option>
+                                    <option value={"family:others"}>Inni</option>
+                                </optgroup>
+                                <option value={"table:"}>Bez stołu</option>
+                                <optgroup label="RSVP">
+                                    <option value={"rsvp:yes"}>Potwierdził przybycie</option>
+                                    <option value={"rsvp:no"}>Nie przyjdzie</option>
+                                    <option value={"rsvp:maybe"}>Niezdecydowany</option>
+                                </optgroup>
+                                <optgroup label="Zaproszeni">
+                                    <option value={"invited:true"}>Zaproszony</option>
+                                    <option value={"invited:false"}>Niezaproszony</option>
+                                </optgroup>
                             </select>
                         </th>
                     </tr>
@@ -92,26 +126,37 @@ export default class ComplexGuestManagement extends Component {
                         <th>Lp.</th>
                         <th>Gość</th>
                         <th>Rodzaj</th>
+                        <th>Wysłane zaproszenie</th>
+                        <th>RSVP?</th>
                     </tr>
                     </thead>
                     <tbody>
                     {this.props.guests
                         .filter(g => {
-                            let type;
-                            if (this.state.type === "non-assigned") {
-                                type = g.table.toString() === ""
-                            } else if (this.state.type !== "all") {
-                                type = g.type === this.state.type;
-                            } else {
-                                type = true
-                            }
-                            return type && g.name.toLowerCase().indexOf(this.state.phrase.toLowerCase()) !== -1
+                            let filter = _.get(this.state.filters, this.state.filter.type);
+                            return filter(g, this.state.filter.expected) && g.name.toLowerCase().indexOf(this.state.phrase.toLowerCase()) !== -1
                         })
                         .map((g, i) =>
                             <tr key={g.id}>
                                 <td>{i + 1}.</td>
                                 <td>{g.name}</td>
                                 <td><GuestType type={g.type}/></td>
+                                <td><input
+                                    type="checkbox"
+                                    className="form-control"
+                                    checked={g.invited}
+                                    onChange={this.invite(g.id)}/>
+                                </td>
+                                <td>
+                                    <select
+                                        className="form-control"
+                                        value={g.rsvp}
+                                        onChange={this.rsvp(g.id)}>
+                                        <option value={"yes"}>Tak</option>
+                                        <option value={"no"}>Nie</option>
+                                        <option value={"maybe"}>Niewiadomo</option>
+                                    </select>
+                                </td>
                             </tr>
                         )}
                     </tbody>
