@@ -85,7 +85,6 @@ export default class ComplexGuestManagement extends Component {
 
     render() {
         return (
-            <GenericModal label="Zarządzanie gośćmi">
                 <table className="table table-striped">
                     <thead>
                     <tr>
@@ -161,7 +160,6 @@ export default class ComplexGuestManagement extends Component {
                         )}
                     </tbody>
                 </table>
-            </GenericModal>
         )
     }
 }

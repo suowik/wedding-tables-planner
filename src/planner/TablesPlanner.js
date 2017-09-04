@@ -4,7 +4,7 @@ import shortid from 'shortid'
 import Tables from './Tables.js';
 import GuestList from './GuestList.js';
 import EditTable from './EditTable.js';
-import ManageGuests from './ManageGuests.js';
+import ImportGuests from './ImportGuests.js';
 import PrintView from './PrintView.js';
 import globals from '../common/globals.js'
 import auth from '../auth/auth.js'
@@ -30,12 +30,6 @@ class App extends Component {
             };
             let that = this;
             request(requestData, (err, res, state) => {
-                let guests = state.guests.map(g => {
-                    if (g.rsvp === undefined) g.rsvp = "maybe";
-                    if (g.invited === undefined) g.invited = false;
-                    return g
-                });
-
                 that.setState(state)
             })
         }
@@ -53,6 +47,7 @@ class App extends Component {
             width: width,
             height: height,
             tables: tables,
+            view: "MANAGE_TABLES",
             editMode: {
                 active: false,
                 allGuests: guests,
@@ -61,7 +56,7 @@ class App extends Component {
         }
     }
 
-    updateWedding = () => {
+    saveState = () => {
         let loggedUser = auth.loggedUser();
         let token = loggedUser.token;
         let requestData = {
@@ -223,6 +218,7 @@ class App extends Component {
     rsvp = (guestId, rsvp) => {
         this.withGuest(guestId, (_guest) => _guest.rsvp = rsvp);
     };
+
     withGuest = (guestId, cb) => {
         let guests = this.state.guests;
         let found = guests.filter(g => g.id === guestId);
@@ -235,42 +231,66 @@ class App extends Component {
         }
     };
 
+    activeView = (view) => {
+        return (e) => {
+            e.preventDefault();
+            this.setState({view: view})
+        }
+    };
+
     render() {
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-lg-12">
-                        <ManageGuests guests={this.state.guests} addGuestsHandler={this.addGuestsHandler}/>
-                        <ComplexGuestManagement guests={this.state.guests} invite={this.invite} rsvp={this.rsvp}/>
-                        <PrintView tables={this.state.tables}/>
+                    <div className="btn-group">
+                        <button type="button" className="btn btn-default" onClick={this.activeView("MANAGE_TABLES")}>
+                            Podgląd stołów
+                        </button>
+                        <button type="button" className="btn btn-default" onClick={this.activeView("MANAGE_GUESTS")}>
+                            Zarządzanie gośćmi
+                        </button>
+                        <button type="button" className="btn btn-default" onClick={this.activeView("IMPORT_GUESTS")}>
+                            Import gości
+                        </button>
+                        <button type="button" className="btn btn-default" onClick={this.activeView("PRINT_TABLES")}>
+                            Wydruk stołów
+                        </button>
+                        <button type="button" className="btn btn-primary" onClick={this.saveState}>Zapisz</button>
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-lg-3">
-                        <button className="btn btn-primary" onClick={this.updateWedding}>Zapisz układ</button>
+                    <div className="col-lg-12">
+                        {this.state.view === "IMPORT_GUESTS" &&
+                        <ImportGuests guests={this.state.guests} addGuestsHandler={this.addGuestsHandler}/>}
+                        {this.state.view === "MANAGE_GUESTS" &&
+                        <ComplexGuestManagement guests={this.state.guests} invite={this.invite} rsvp={this.rsvp}/>}
+                        {this.state.view === "PRINT_TABLES" && <PrintView tables={this.state.tables}/>}
+                        {this.state.view === "MANAGE_TABLES" && <div>
+                            <div className="col-lg-3">
+                                <GuestList guests={this.state.guests}
+                                           assignGuestToTable={this.assignGuestToTable}
+                                           tables={this.state.tables}/>
 
-                        <GuestList guests={this.state.guests}
-                                   assignGuestToTable={this.assignGuestToTable}
-                                   tables={this.state.tables}/>
-
-                        <EditTable editMode={this.state.editMode}
-                                   guests={this.state.guests}
-                                   tables={this.state.tables}
-                                   assignGuestToTable={this.assignGuestToTable}
-                                   closeEditMode={this.closeEditMode}
-                                   reorderGuestsAtTable={this.reorderGuestsAtTable}
-                                   editTableName={this.editTableName}
-                                   handleRemove={this.handleRemove}
-                        />
-                    </div>
-                    <div className="col-lg-9">
-                        <Tables guests={this.state.guests}
-                                tables={this.state.tables}
-                                width={this.state.width}
-                                height={this.state.height}
-                                editHandler={this.editHandler}
-                                moveHandler={this.moveTable}
-                        />
+                                <EditTable editMode={this.state.editMode}
+                                           guests={this.state.guests}
+                                           tables={this.state.tables}
+                                           assignGuestToTable={this.assignGuestToTable}
+                                           closeEditMode={this.closeEditMode}
+                                           reorderGuestsAtTable={this.reorderGuestsAtTable}
+                                           editTableName={this.editTableName}
+                                           handleRemove={this.handleRemove}
+                                />
+                            </div>
+                            <div className="col-lg-9">
+                                <Tables guests={this.state.guests}
+                                        tables={this.state.tables}
+                                        width={this.state.width}
+                                        height={this.state.height}
+                                        editHandler={this.editHandler}
+                                        moveHandler={this.moveTable}
+                                />
+                            </div>
+                        </div>}
                     </div>
                 </div>
             </div>

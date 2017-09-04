@@ -26,32 +26,21 @@ export default class PrintView extends Component {
 
     render() {
         return (
-            <div className="col-lg-6">
-                <button className="btn btn-block btn-default" onClick={this.open}>Spis stołów i gości</button>
-                <Modal show={this.state.active} onHide={this.close}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Spis stołów i gości</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="container-fluid">
-                            <div className="row">
-                                {this.props.tables.map(table => {
-                                    return <table key={table.id} className="table table-striped">
-                                        <thead>
-                                        <th>{table.label} (Stół {table.id+1})</th>
-                                        </thead>
-                                        <tbody>
-                                        {table.guests.map(guest => <tr key={guest.id}><td>{guest.name}</td></tr>)}
-                                        </tbody>
-                                    </table>
-                                })}
-                            </div>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button onClick={this.close}>Close</Button>
-                    </Modal.Footer>
-                </Modal>
+            <div className="container-fluid">
+                <div className="row">
+                    {this.props.tables.map(table => {
+                        return <table key={table.id} className="table table-striped">
+                            <thead>
+                            <th>{table.label} (Stół {table.id + 1})</th>
+                            </thead>
+                            <tbody>
+                            {table.guests.map(guest => <tr key={guest.id}>
+                                <td>{guest.name}</td>
+                            </tr>)}
+                            </tbody>
+                        </table>
+                    })}
+                </div>
             </div>
         )
     }
