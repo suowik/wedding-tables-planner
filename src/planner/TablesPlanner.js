@@ -238,10 +238,19 @@ class App extends Component {
         }
     };
 
+    addGuestHandler = (_guest)=>{
+        let guest = {id: shortid.generate(), name: _guest.name, type: _guest.type, table: "", invited: false, rsvp: "maybe"};
+        let guests = this.state.guests;
+        guests.push(guest);
+        this.setState({
+            guests: guests
+        })
+    };
+
     render() {
         return (
             <div className="container">
-                <div className="row">
+                <div className="row" style={{marginBottom: "30px"}}>
                     <div className="btn-group">
                         <button type="button" className="btn btn-default" onClick={this.activeView("MANAGE_TABLES")}>
                             Podgląd stołów
@@ -263,7 +272,7 @@ class App extends Component {
                         {this.state.view === "IMPORT_GUESTS" &&
                         <ImportGuests guests={this.state.guests} addGuestsHandler={this.addGuestsHandler}/>}
                         {this.state.view === "MANAGE_GUESTS" &&
-                        <ComplexGuestManagement guests={this.state.guests} invite={this.invite} rsvp={this.rsvp}/>}
+                        <ComplexGuestManagement guests={this.state.guests} invite={this.invite} rsvp={this.rsvp} addGuestHandler={this.addGuestHandler}/>}
                         {this.state.view === "PRINT_TABLES" && <PrintView tables={this.state.tables}/>}
                         {this.state.view === "MANAGE_TABLES" && <div>
                             <div className="col-lg-3">
