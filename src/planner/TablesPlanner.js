@@ -238,13 +238,36 @@ class App extends Component {
         }
     };
 
-    addGuestHandler = (_guest)=>{
-        let guest = {id: shortid.generate(), name: _guest.name, type: _guest.type, table: "", invited: false, rsvp: "maybe"};
+    addGuestHandler = (_guest) => {
+        let guest = {
+            id: shortid.generate(),
+            name: _guest.name,
+            type: _guest.type,
+            table: "",
+            invited: false,
+            rsvp: "maybe"
+        };
         let guests = this.state.guests;
         guests.push(guest);
         this.setState({
             guests: guests
         })
+    };
+
+    deleteHandler = (_guest) => {
+        console.log(_guest)
+        let guests = this.state.guests;
+        for (let i = 0; i < guests.length; i++) {
+            if (guests[i].id === _guest.id) {
+                guests.splice(i, 1);
+                break;
+            }
+        }
+        this.findGuestAcrossTablesAndRemoveIt(_guest);
+        this.setState({
+            guests: guests
+        })
+
     };
 
     render() {
@@ -272,7 +295,11 @@ class App extends Component {
                         {this.state.view === "IMPORT_GUESTS" &&
                         <ImportGuests guests={this.state.guests} addGuestsHandler={this.addGuestsHandler}/>}
                         {this.state.view === "MANAGE_GUESTS" &&
-                        <ComplexGuestManagement guests={this.state.guests} invite={this.invite} rsvp={this.rsvp} addGuestHandler={this.addGuestHandler}/>}
+                        <ComplexGuestManagement guests={this.state.guests}
+                                                invite={this.invite}
+                                                rsvp={this.rsvp}
+                                                addGuestHandler={this.addGuestHandler}
+                                                deleteHandler={this.deleteHandler}/>}
                         {this.state.view === "PRINT_TABLES" && <PrintView tables={this.state.tables}/>}
                         {this.state.view === "MANAGE_TABLES" && <div>
                             <div className="col-lg-3">

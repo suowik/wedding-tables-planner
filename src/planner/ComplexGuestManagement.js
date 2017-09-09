@@ -53,7 +53,8 @@ class AddGuestForm extends Component {
             <form className="form-inline">
                 <div className="form-group">
                     <label htmlFor="name">Imię i nazwisko: </label>
-                    <input type="text" value={this.state.name} id="name" className="form-control" onChange={(e) => this.setState({name: e.target.value})}/>
+                    <input type="text" value={this.state.name} id="name" className="form-control"
+                           onChange={(e) => this.setState({name: e.target.value})}/>
                 </div>
                 <div className="form-group">
                     <GuestType handleTypeChange={(type) => this.setState({type: type})} type={this.state.type}/>
@@ -113,6 +114,13 @@ export default class ComplexGuestManagement extends Component {
         }
     };
 
+    delete = (guest) => {
+        return (e) => {
+            e.preventDefault();
+            this.props.deleteHandler(guest)
+        }
+    };
+
 
     render() {
         return (
@@ -156,6 +164,9 @@ export default class ComplexGuestManagement extends Component {
                                     </optgroup>
                                 </select>
                             </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
                         </tr>
                         <tr>
                             <th>Lp.</th>
@@ -163,6 +174,7 @@ export default class ComplexGuestManagement extends Component {
                             <th>Rodzaj</th>
                             <th>Wysłane zaproszenie</th>
                             <th>RSVP?</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -171,26 +183,29 @@ export default class ComplexGuestManagement extends Component {
                                 let filter = _.get(this.state.filters, this.state.filter.type);
                                 return filter(g, this.state.filter.expected) && g.name.toLowerCase().indexOf(this.state.phrase.toLowerCase()) !== -1
                             })
-                            .map((g, i) =>
-                                <tr key={g.id}>
+                            .map((guest, i) =>
+                                <tr key={guest.id}>
                                     <td>{i + 1}.</td>
-                                    <td>{g.name}</td>
-                                    <td><GuestType type={g.type} handleTypeChange={_.noop}/></td>
+                                    <td>{guest.name}</td>
+                                    <td><GuestType type={guest.type} handleTypeChange={_.noop}/></td>
                                     <td><input
                                         type="checkbox"
                                         className="form-control"
-                                        checked={g.invited}
-                                        onChange={this.invite(g.id)}/>
+                                        checked={guest.invited}
+                                        onChange={this.invite(guest.id)}/>
                                     </td>
                                     <td>
                                         <select
                                             className="form-control"
-                                            value={g.rsvp}
-                                            onChange={this.rsvp(g.id)}>
+                                            value={guest.rsvp}
+                                            onChange={this.rsvp(guest.id)}>
                                             <option value={"yes"}>Tak</option>
                                             <option value={"no"}>Nie</option>
                                             <option value={"maybe"}>Niewiadomo</option>
                                         </select>
+                                    </td>
+                                    <td>
+                                        <button className="btn btn-danger" onClick={this.delete(guest)}>Usuń</button>
                                     </td>
                                 </tr>
                             )}
