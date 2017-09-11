@@ -255,7 +255,6 @@ class App extends Component {
     };
 
     deleteHandler = (_guest) => {
-        console.log(_guest)
         let guests = this.state.guests;
         for (let i = 0; i < guests.length; i++) {
             if (guests[i].id === _guest.id) {
