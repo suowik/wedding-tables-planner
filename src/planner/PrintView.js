@@ -31,7 +31,7 @@ export default class PrintView extends Component {
                     {this.props.tables.map(table => {
                         return <table key={table.id} className="table table-striped">
                             <thead>
-                            <th>{table.label} (Stół {table.id + 1})</th>
+                            <th>{table.label}</th>
                             </thead>
                             <tbody>
                             {table.guests.map(guest => <tr key={guest.id}>
